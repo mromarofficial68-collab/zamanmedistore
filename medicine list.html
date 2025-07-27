@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Medicine List - Medi Stock</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+       body {
+      font-family: "Times New Roman", Times, serif;
+      background-color: #f0f4f8;
+  }
+
+      .navbar {
+      background: linear-gradient(to right, hwb(198 6% 85%), #203a43, #2c5364);
+  }
+
+  .navbar-brand,
+  .nav-link {
+      color: #f5f5f5 !important;
+      font-weight: 500;
+      transition: color 0.3s ease;
+  }
+
+  .nav-link:hover {
+      color: #00ffd5 !important;
+  }
+
+  .nav-item {
+      margin-left: 10px;
+  }
+
+  .sticky-top {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+
+ 
+
+    .container {
+      max-width: 1100px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #00796b;
+    }
+
+    .status-low { color: #d32f2f; font-weight: bold; }
+    .status-ok { color: #388e3c; font-weight: bold; }
+
+
+
+
+    
+  </style>
+</head>
+<body>
+
+
+    <!-- Sticky Top Navbar -->
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="Index.html">💊 Medi Stock</a>
+      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="Index.html">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="add medicine.html">Add Medicine</a></li>
+          <li class="nav-item"><a class="nav-link" href="medicine list.html">Medicine List</a></li>
+          <li class="nav-item"><a class="nav-link" href="description.html">Description</a></li>
+
+      
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <div class="container">
+    <h2>📋 Medicine List </h2>
+    <div class="table-responsive">
+      <table class="table table-bordered text-center align-middle">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Expiry</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="medicineTable"></tbody>
+      </table>
+    </div>
+    <div class="text-center">
+      <a href="add-medicine.html" class="btn btn-primary mt-3">➕ Add More Medicine</a>
+    </div>
+  </div>
+
+  <script>
+    const table = document.getElementById("medicineTable");
+
+    function loadMedicines() {
+      const data = JSON.parse(localStorage.getItem("medicines")) || [];
+      table.innerHTML = "";
+
+      data.forEach((med, index) => {
+        const status = med.qty < 5 
+          ? `<span class="status-low">❗ Low</span>` 
+          : `<span class="status-ok">✅ In Stock</span>`;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><span class="view">${med.no}</span><input class="form-control edit d-none" value="${med.no}" disabled></td>
+          <td><span class="view">${med.name}</span><input class="form-control edit d-none" value="${med.name}"></td>
+          <td><span class="view">${med.type}</span>
+              <select class="form-select edit d-none">
+                <option ${med.type === 'Tablet' ? 'selected' : ''}>Tablet</option>
+                <option ${med.type === 'Bottle' ? 'selected' : ''}>Bottle</option>
+                <option ${med.type === 'Injection' ? 'selected' : ''}>Injection</option>
+                <option ${med.type === 'Capsule' ? 'selected' : ''}>Capsule</option>
+                <option ${med.type === 'Syrup' ? 'selected' : ''}>Syrup</option>
+              </select>
+          </td>
+          <td><span class="view">${med.expiry}</span><input type="date" class="form-control edit d-none" value="${med.expiry}"></td>
+          <td><span class="view">${med.qty}</span><input type="number" class="form-control edit d-none" value="${med.qty}"></td>
+          <td class="status">${status}</td>
+          <td>
+            <button class="btn btn-sm btn-warning mb-1" onclick="toggleEdit(this, ${index})">✏️ Edit</button><br>
+            <button class="btn btn-sm btn-danger" onclick="deleteMedicine(${index})">🗑️ Delete</button>
+          </td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    function toggleEdit(btn, index) {
+      const row = btn.closest("tr");
+      const isEditing = row.querySelector(".edit.d-none") === null;
+
+      if (isEditing) {
+        const inputs = row.querySelectorAll(".edit");
+        const updatedMed = {
+          no: inputs[0].value,
+          name: inputs[1].value,
+          type: inputs[2].value,
+          expiry: inputs[3].value,
+          qty: parseInt(inputs[4].value)
+        };
+
+        let data = JSON.parse(localStorage.getItem("medicines")) || [];
+        data[index] = updatedMed;
+        localStorage.setItem("medicines", JSON.stringify(data));
+        loadMedicines();
+      } else {
+        row.querySelectorAll(".view").forEach(el => el.classList.add("d-none"));
+        row.querySelectorAll(".edit").forEach(el => el.classList.remove("d-none"));
+        btn.textContent = "💾 Save";
+        btn.classList.remove("btn-warning");
+        btn.classList.add("btn-success");
+      }
+    }
+
+    function deleteMedicine(index) {
+      if (confirm("⚠️ Are you sure you want to delete this medicine?")) {
+        let data = JSON.parse(localStorage.getItem("medicines")) || [];
+        data.splice(index, 1);
+        localStorage.setItem("medicines", JSON.stringify(data));
+        loadMedicines();
+      }
+    }
+
+    window.onload = loadMedicines;
+  </script>
+
+
+<script>
+  if (localStorage.getItem('loggedIn') !== 'true') {
+    window.location.href = 'login.html';
+  }
+</script>
+
+</body>
+</html>

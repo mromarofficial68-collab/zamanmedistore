@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sticky Navbar - Pharmacy App</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="footer.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+</head>
+
+<body>
+
+  <!-- Sticky Top Navbar -->
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="Index.html">💊 Medi Stock</a>
+      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="Index.html">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="add medicine.html">Add Medicine</a></li>
+          <li class="nav-item"><a class="nav-link" href="medicine list.html">Medicine List</a></li>
+           <li class="nav-item"><a class="nav-link" href="description.html">Description</a></li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  
+   
+
+    <!-- Hero Section with Slider -->
+    <section class="hero-slider">
+        <div class="slider-image active">
+            <img src="Images/medicine 1.jpg" alt="">
+        </div>
+        <div class="slider-image">
+            <img src="Images/medicine  2.jpg" alt="">
+        </div>
+        <div class="slider-image">
+            <img src="Images/medicine 3.jpg" alt="">
+        </div>
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+            <h1>Welcome to Medi Stock</h1>
+            <p>Smartly manage your medical inventory with real-time tracking and insights.</p>
+            <a href="description.html" class="btn btn-glow">  Get Started</a>
+        </div>
+    </section>
+
+     <script>
+        const slides = document.querySelectorAll('.slider-image');
+        let current = 0;
+
+        setInterval(() => {
+            slides[current].classList.remove('active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+        }, 5000); // 5 seconds
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <hr>
+
+  <!-- Add New Medicine -->
+  <div class="container">
+    <h2> Add New Medicine</h2>
+    <form id="addMedicineForm">
+      <div class="mb-3">
+        <input type="text" class="form-control" id="medNo" placeholder="Medicine No" required>
+      </div>
+      <div class="mb-3">
+        <input type="text" class="form-control" id="medName" placeholder="Medicine Name" required>
+      </div>
+      <div class="mb-3">
+        <select class="form-select" id="medType" required>
+          <option value="">Select Type</option>
+          <option>Tablet</option>
+          <option>Bottle</option>
+          <option>Injection</option>
+          <option>Capsule</option>
+          <option>Syrup</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <input type="date" class="form-control" id="medExpiry" required>
+      </div>
+      <div class="mb-3">
+        <input type="number" class="form-control" id="medQty" placeholder="Quantity" required>
+      </div>
+      <button type="submit" class="btn btn-success w-100"> Save Medicine</button>
+    </form>
+    <div class="text-center mt-3">
+      <a href="medicine list.html" class="btn btn-link">📋 Go to Medicine List</a>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Medicine List -->
+  <div class="container">
+    <h2> Medicine List </h2>
+    <div class="table-responsive">
+      <table class="table table-bordered text-center align-middle">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Expiry</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="medicineTable"></tbody>
+      </table>
+    </div>
+    <div class="text-center">
+      <a href="add-medicine.html" class="btn btn-primary mt-3">➕ Add More Medicine</a>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- footer.html -->
+  <footer class="custom-footer">
+    <div class="container text-center">
+      <p>© 2025 <strong>Medi Stock</strong>. All rights reserved.</p>
+      <div class="social-icons mt-2">
+        <a href="#" class="facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="footer-placeholder"></div>
+  <script>
+    fetch("footer.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("footer-placeholder").innerHTML = data;
+      });
+  </script>
+
+  <script>
+    if (localStorage.getItem('loggedIn') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+
+
+
+
+</body>
+
+</html>
